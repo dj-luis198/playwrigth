@@ -17,7 +17,7 @@ export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true, // evita que los tests dentro de un archivo corran en paralelo 
-  //workers: 1, // fuerza ejecución secuencial
+  workers: 2, // fuerza ejecución secuencial
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
