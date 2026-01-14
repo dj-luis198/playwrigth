@@ -47,38 +47,30 @@ class SelectMenuPage {
     async generateOptions(options) {
         const shuffled = options
             .map(value => ({ value, sort: Math.random() }))
-            .sort((a, b) => a.sort - b.sort).map(({ value }) => value); 
-            // Elegir cuántas opciones quieres (ejemplo: 2 al azar) 
-            const randomCount = Math.floor(Math.random() * options.length) + 1; 
-            return shuffled.slice(0, randomCount);
+            .sort((a, b) => a.sort - b.sort).map(({ value }) => value);
+        // Elegir cuántas opciones quieres (ejemplo: 2 al azar) 
+        const randomCount = Math.floor(Math.random() * options.length) + 1;
+        return shuffled.slice(0, randomCount);
     }
 
 
     async selectMultiOptions(options) {
         await this.multiSelectDropDown.click();
-        //const optionLocator = await this.page.locator('div[class*="css-26l3qy-menu"]').innerHTML();
-        //console.log(optionLocator);
-        for (const option of options) {
-            switch (option) {
-                case 'Green':
-                    await this.page.locator('#react-select-4-option-0').click();
-                    break;
-                case 'Blue':
-                    await this.page.locator('#react-select-4-option-1').click();
-                    break;
-                case 'Black':
-                    await this.page.locator('#react-select-4-option-2').click();
-                    break;
-                case 'Red':
-                    await this.page.locator('#react-select-4-option-3').click();
-                    break;
-
-                default:
-                    break;
+        for (const text of options) {
+            const menu = this.page.locator('div.css-11unzgr');
+            if (!(await menu.isVisible())) {
+                await this.page.locator('div.css-1wy0on6').click();
             }
+
+            const locator = this.page.locator('div.css-11unzgr div', { hasText: text });
+            await locator.waitFor({ state: 'visible' });
+            await locator.click();
         }
+
+        // Cerrar el menú si lo necesitás
         await this.page.keyboard.press('Escape');
     }
+
 
     async getTextOptionsSelected() {
         return await this.page.locator('.css-1rhbuit-multiValue .css-12jo7m5').allTextContents();
